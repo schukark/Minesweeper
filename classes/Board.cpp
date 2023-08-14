@@ -5,9 +5,9 @@ std::uniform_int_distribution<int> Board::dist;
 std::vector<std::pair<int, int>> Board::transitions;
 
 
-Board::Board(int height, int width, int mine_count): height(height), width(width), mine_count(mine_count) {
+Board::Board(int height, int width, int mine_count) : height(height), width(width), mine_count(mine_count) {
     dist = std::uniform_int_distribution<int>(0, height * width - 1);
-    transitions = std::vector<std::pair<int, int>>({{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}, {-1, -1}});
+    transitions = std::vector<std::pair<int, int>>({ {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}, {-1, -1} });
 
     int count = 0;
     while (count < mine_count) {
@@ -24,11 +24,11 @@ Board::Board(int height, int width, int mine_count): height(height), width(width
 }
 
 void Board::print_board() const {
-    for (const auto & row : board) {
-        for (const auto & elem: row) {
+    for (const auto& row : board) {
+        for (const auto& elem : row) {
             std::wcout << elem;
         }
-        std::wcout << L'\n';
+        std::wcout << std::endl;
     }
 }
 
@@ -48,7 +48,7 @@ int Board::make_move(int row, int col, bool mine) {
     int count_adjacent = count_adj(row, col);
 
     if (count_adjacent && mine) {
-        board[row][col] = count_adjacent;
+        board[row][col] = std::to_wstring(count_adjacent)[0];
         return 0;
     }
 
@@ -65,7 +65,7 @@ int Board::make_move(int row, int col, bool mine) {
 int Board::count_adj(int x, int y) const {
     int count = 0;
 
-    for (const auto & [dx, dy]: transitions) {
+    for (const auto& [dx, dy] : transitions) {
         int new_x = x + dx;
         int new_y = y + dy;
 
@@ -77,8 +77,8 @@ int Board::count_adj(int x, int y) const {
 }
 
 void Board::print_board_loss() {
-    for (const auto & [key, value]: mines) {
-        board[key.first][key.second] = L'💣';
+    for (const auto& [key, value] : mines) {
+        board[key.first][key.second] = L'*';
     }
 
     for (int x = 0; x < height; x++) {
