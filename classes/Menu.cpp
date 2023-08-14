@@ -47,6 +47,7 @@ void Menu::init_game() {
     }
     else {
         std::wcout << L"No such difficulty" << std::endl;
+        return;
     }
 
     board->print_board();

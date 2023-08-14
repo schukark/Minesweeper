@@ -3,11 +3,13 @@
 std::random_device Board::rd;
 std::uniform_int_distribution<int> Board::dist;
 std::vector<std::pair<int, int>> Board::transitions;
+std::wstring Board::numerals;
 
 
 Board::Board(int height, int width, int mine_count) : height(height), width(width), mine_count(mine_count) {
     dist = std::uniform_int_distribution<int>(0, height * width - 1);
     transitions = std::vector<std::pair<int, int>>({ {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}, {-1, -1} });
+    numerals = L"０１２３４５６７８９";
 
     int count = 0;
     while (count < mine_count) {
@@ -20,7 +22,7 @@ Board::Board(int height, int width, int mine_count) : height(height), width(widt
         count++;
     }
 
-    board = std::move(std::vector<std::vector<wchar_t>>(height, std::vector<wchar_t>(width, L'⬛')));
+    board = std::move(std::vector<std::vector<wchar_t>>(height, std::vector<wchar_t>(width, EMPTY_SPACE)));
 }
 
 void Board::print_board() const {
@@ -38,25 +40,27 @@ int Board::make_move(int row, int col, bool mine) {
 
     if (row >= height || col >= width || row < 0 || col < 0) {
         std::wcout << L"Incorrect move" << std::endl;
-        return 1;
+        return 0;
     }
 
     if (mine && mines.count(std::make_pair(row, col)) > 0) {
         print_board_loss();
+        return 1;
     }
 
     int count_adjacent = count_adj(row, col);
 
     if (count_adjacent && mine) {
-        board[row][col] = std::to_wstring(count_adjacent)[0];
+        board[row][col] = numerals[count_adjacent];
         return 0;
     }
 
     if (mine) {
-        board[row][col] = L'⬜';
+        board[row][col] = NOT_PRESSED;
+        reveal_adjacent(row, col);
     }
     else {
-        board[row][col] = L'⚑';
+        board[row][col] = FLAG;
     }
 
     return 0;
@@ -70,23 +74,44 @@ int Board::count_adj(int x, int y) const {
         int new_y = y + dy;
 
         if (new_x < 0 || new_x >= height || new_y < 0 || new_y >= width) continue;
-        count += mines.count(std::make_pair(new_x, new_y)) > 0;
+        if (mines.count(std::make_pair(new_x, new_y)) > 0) {
+            count++;
+        }
     }
 
     return count;
 }
 
+void Board::reveal_adjacent(int x, int y) {
+    board[x][y] = (count_adj(x, y) ? numerals[count_adj(x, y)] : NOT_PRESSED);
+    if (count_adj(x, y)) return;
+
+    for (const auto& [dx, dy] : transitions) {
+        int new_x = x + dx;
+        int new_y = y + dy;
+
+        if (new_x < 0 || new_x >= height || new_y < 0 || new_y >= width) continue;
+
+        if (board[new_x][new_y] == EMPTY_SPACE && !mines.count(std::make_pair(new_x, new_y))) reveal_adjacent(new_x, new_y);
+    }
+}
+
 void Board::print_board_loss() {
     for (const auto& [key, value] : mines) {
-        board[key.first][key.second] = L'*';
+        board[key.first][key.second] = BOMB;
     }
 
     for (int x = 0; x < height; x++) {
         for (int y = 0; y < width; y++) {
+            if (board[x][y] == BOMB) {
+                std::wcout << BOMB;
+                continue;
+            }
+
             int count = count_adj(x, y);
 
-            if (count) std::wcout << std::to_wstring(count);
-            else std::wcout << board[x][y];
+            if (count) std::wcout << numerals[count];
+            else std::wcout << EMPTY_SPACE;
         }
         std::wcout << std::endl;
     }
