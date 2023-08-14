@@ -1,5 +1,10 @@
 #include "Board.hpp"
 
+std::random_device Board::rd;
+std::uniform_int_distribution<int> Board::dist;
+std::vector<std::pair<int, int>> Board::transitions;
+
+
 Board::Board(int height, int width, int mine_count): height(height), width(width), mine_count(mine_count) {
     dist = std::uniform_int_distribution<int>(0, height * width - 1);
     transitions = std::vector<std::pair<int, int>>({{0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}, {-1, -1}});
@@ -21,9 +26,9 @@ Board::Board(int height, int width, int mine_count): height(height), width(width
 void Board::print_board() const {
     for (const auto & row : board) {
         for (const auto & elem: row) {
-            std::wcout << elem << L' ' << std::endl;
+            std::wcout << elem;
         }
-        std::wcout << std::endl;
+        std::wcout << L'\n';
     }
 }
 

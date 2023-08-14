@@ -4,9 +4,9 @@
 
 
 void Menu::show_menu() {
-    std::cout << "Possible commands:" << "\n";
-    std::cout << "init - Start game" << "\n";
-    std::cout << "quit - Exit game" << std::endl;
+    std::wcout << L"Possible commands:" << L"\n";
+    std::wcout << L"init - Start game" << L"\n";
+    std::wcout << L"quit - Exit game" << std::endl;
 
     std::string command;
     std::cin >> command;
@@ -20,8 +20,8 @@ void Menu::show_menu() {
 }
 
 void Menu::init_game() {
-    std::cout << "Possible difficulties:" << "\n";
-    std::cout << "beginner, intermediate, hard, expert, custom" << std::endl;
+    std::wcout << L"Possible difficulties:" << L"\n";
+    std::wcout << L"beginner, intermediate, hard, expert, custom" << std::endl;
 
     std::string diff;
     std::cin >> diff;
@@ -40,20 +40,20 @@ void Menu::init_game() {
     }
     else if (diff == "custom") {
         int height, width, mines;
-        std::cout << "Enter height, width and number of mines:" << std::endl;
+        std::wcout << L"Enter height, width and number of mines:" << std::endl;
         std::cin >> height >> width >> mines;
 
         board = std::move(std::make_unique<Board>(Board(height, width, mines)));
     }
     else {
-        std::cout << "No such difficulty" << std::endl;
+        std::wcout << L"No such difficulty" << std::endl;
     }
     board->print_board();
     make_move();
 }
 
 void Menu::make_move() {
-    std::cout << "Enter move in the following format: column, row, mine/flag" << std::endl;
+    std::wcout << L"Enter move in the following format: column, row, mine/flag" << std::endl;
     int column, row;
     bool mine;
 

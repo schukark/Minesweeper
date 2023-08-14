@@ -12,9 +12,9 @@ public:
     int make_move(int row, int col, bool mine);
 
 private:
-    std::random_device rd;
-    std::uniform_int_distribution<int> dist;
-    std::vector<std::pair<int, int>> transitions;
+    static std::random_device rd;
+    static std::uniform_int_distribution<int> dist;
+    static std::vector<std::pair<int, int>> transitions;
 
     int height, width, mine_count;
     std::vector<std::vector<wchar_t>> board;
