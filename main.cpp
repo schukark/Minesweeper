@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
     // The cursor ghost is a cursor that always shows in the cell below the
     // mouse cursor.
     SDL_Rect grid_cursor_ghost = { grid_cursor.x, grid_cursor.y, grid_cell_size,
-                                  grid_cell_size };
+                                grid_cell_size };
 
     // Dark theme.
     SDL_Color grid_background = { 22, 22, 22, 255 }; // Barely Black
