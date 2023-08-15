@@ -39,10 +39,13 @@ int main(int argc, char **argv) {
 
         while (SDL_PollEvent(&event) > 0) {
             switch(event.type) {
-                case SDL_QUIT: {
+                case SDL_QUIT: 
                     keep_window_open = false;
                     break;
-                }
+                
+                case SDL_MOUSEBUTTONDOWN: 
+                    std::wcout << event.motion.x << " " << event.motion.y << std::endl;
+                    break;
             }
             
             SDL_UpdateWindowSurface(window);
