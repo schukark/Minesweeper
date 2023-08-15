@@ -23,11 +23,9 @@ void Board::print_board() const {
 }
 
 int Board::make_move(int row, int col, bool mine) {
-    row--;
-    col--;
-
     if (row >= height || col >= width || row < 0 || col < 0) {
-        std::wcout << L"Incorrect move" << std::endl;
+        std::wcout << L"Incorrect move, out of bounds" << std::endl;
+        std::wcout << row << " " << col << std::endl;
         return 0;
     }
 

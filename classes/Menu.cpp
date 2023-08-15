@@ -2,23 +2,6 @@
 #include <iostream>
 #include <string>
 
-
-void Menu::show_menu() {
-    std::wcout << L"Possible commands:" << std::endl;
-    std::wcout << L"init - Start game" << std::endl;
-    std::wcout << L"quit - Exit game" << std::endl;
-
-    std::wstring command;
-    std::getline(std::wcin, command);
-
-    if (command == L"init") {
-        init_game();
-    }
-    else if (command == L"quit") {
-        return;
-    }
-}
-
 std::tuple<int, int, int> Menu::init_game() {
     std::wcout << L"Possible difficulties:" << std::endl;
     std::wcout << L"beginner, intermediate, hard, expert, custom" << std::endl;
@@ -62,31 +45,22 @@ std::tuple<int, int, int> Menu::init_game() {
     return board->info();
 }
 
-void Menu::make_move() {
-    std::wcout << L"Enter move in the following format: column, row, mine/flag" << std::endl;
-    int column, row;
-    std::wstring word;
-
-    std::wcin >> column >> row >> word;
-
-    if (word != L"flag" && word != L"mine") {
-        std::wcout << L"Incorrect move" << std::endl;
-        make_move();
-        return;
-    }
-
-    if (board->make_move(row, column, word == L"mine")) {
+void Menu::make_move(int row, int col, bool mine) {
+    if (board->make_move(row, col, mine)) {
         std::wcout << L"You lost" << std::endl;
         return;
     }
-    board->print_board();
+
     if (check_win()) {
         std::wcout << L"You won!" << std::endl;
         return;
     }
-    make_move();
 }
 
 int Menu::check_win() const {
     return board->check_win();
+}
+
+void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopened) const {
+    
 }

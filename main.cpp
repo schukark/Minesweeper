@@ -88,6 +88,8 @@ int main(int argc, char** argv) {
                 grid_cursor.x = (event.motion.x / grid_cell_size) * grid_cell_size;
                 grid_cursor.y = (event.motion.y / grid_cell_size) * grid_cell_size;
 
+                gameboard->make_move(grid_cursor.x / grid_cell_size, grid_cursor.y / grid_cell_size, true);
+
                 not_first_click = SDL_TRUE;
                 break;
 
