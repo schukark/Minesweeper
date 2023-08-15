@@ -19,7 +19,7 @@ void Menu::show_menu() {
     }
 }
 
-void Menu::init_game() {
+std::tuple<int, int, int> Menu::init_game() {
     std::wcout << L"Possible difficulties:" << std::endl;
     std::wcout << L"beginner, intermediate, hard, expert, custom" << std::endl;
 
@@ -45,22 +45,21 @@ void Menu::init_game() {
 
         if (mines >= height * width) {
             std::wcout << L"Too much bombs!" << std::endl;
-            return;
+            return {-1, -1, -1};
         }
         else if (mines <= 0) {
             std::wcout << L"Too little bombs!" << std::endl;
-            return;
+            return {-1, -1, -1};
         }
 
         board = std::move(std::make_unique<Board>(Board(height, width, mines)));
     }
     else {
         std::wcout << L"No such difficulty" << std::endl;
-        return;
+        return {-1, -1, -1};
     }
 
-    board->print_board();
-    make_move();
+    return board->info();
 }
 
 void Menu::make_move() {

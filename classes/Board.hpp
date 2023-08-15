@@ -16,6 +16,7 @@ public:
     void print_board() const;
     int make_move(int row, int col, bool mine);
     int check_win() const;
+    std::tuple<int, int, int> info() const;
 
 private:
     static std::random_device rd;

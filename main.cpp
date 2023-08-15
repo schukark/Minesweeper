@@ -4,16 +4,26 @@
 #include <memory>
 
 #include "SDL2\SDL.h"
+#include "classes\Board.cpp"
+#include "classes\Menu.cpp"
 
-#define HEIGHT 480
-#define WIDTH 640
+#define FPS 60
 
 int main(int argc, char** argv) {
     _setmode(_fileno(stdout), _O_U8TEXT);
 
+    int grid_width, grid_height, mine_count;
+    std::unique_ptr<Menu> gameboard(new Menu());
+    std::tie(grid_width, grid_height, mine_count) = gameboard->init_game();
+
+    if (grid_width < 0) {
+        std::wcout << "Gameboard initialization failed" << std::endl;
+        return -1;
+    }
+
+    std::wcout << "Gameboard initialized" << std::endl;
+
     int grid_cell_size = 36;
-    int grid_width = WIDTH / grid_cell_size;
-    int grid_height = HEIGHT / grid_cell_size;
 
     // + 1 so that the last grid lines fit in the screen.
     int window_width = (grid_width * grid_cell_size) + 1;
@@ -64,41 +74,21 @@ int main(int argc, char** argv) {
     SDL_bool quit = SDL_FALSE;
     SDL_bool mouse_active = SDL_FALSE;
     SDL_bool mouse_hover = SDL_FALSE;
+    SDL_bool not_first_click = SDL_FALSE;
+
+    std::wcout << window_height << " " << window_width << std::endl;
 
     while (!quit) {
         SDL_Event event;
 
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.sym) {
-
-                case SDLK_w:
-                case SDLK_UP:
-                    grid_cursor.y -= grid_cell_size;
-                    break;
-
-                case SDLK_s:
-                case SDLK_DOWN:
-                    grid_cursor.y += grid_cell_size;
-                    break;
-
-                case SDLK_a:
-                case SDLK_LEFT:
-                    grid_cursor.x -= grid_cell_size;
-                    break;
-
-                case SDLK_d:
-                case SDLK_RIGHT:
-                    grid_cursor.x += grid_cell_size;
-                    break;
-                }
-
-                break;
-
+        if (!SDL_PollEvent(&event)) continue;
+        
+        switch (event.type) {
             case SDL_MOUSEBUTTONDOWN:
                 grid_cursor.x = (event.motion.x / grid_cell_size) * grid_cell_size;
                 grid_cursor.y = (event.motion.y / grid_cell_size) * grid_cell_size;
+
+                not_first_click = SDL_TRUE;
                 break;
 
             case SDL_MOUSEMOTION:
@@ -118,7 +108,6 @@ int main(int argc, char** argv) {
             case SDL_QUIT:
                 quit = SDL_TRUE;
                 break;
-            }
         }
 
         // Draw grid background.
@@ -148,12 +137,15 @@ int main(int argc, char** argv) {
         }
 
         // Draw grid cursor.
-        SDL_SetRenderDrawColor(renderer, grid_cursor_color.r,
-            grid_cursor_color.g, grid_cursor_color.b,
-            grid_cursor_color.a);
-        SDL_RenderFillRect(renderer, &grid_cursor);
+        if (not_first_click) {
+            SDL_SetRenderDrawColor(renderer, grid_cursor_color.r,
+                grid_cursor_color.g, grid_cursor_color.b,
+                grid_cursor_color.a);
+            SDL_RenderFillRect(renderer, &grid_cursor);
+        }
 
         SDL_RenderPresent(renderer);
+        SDL_Delay(1000 / FPS);
     }
 
     SDL_DestroyRenderer(renderer);

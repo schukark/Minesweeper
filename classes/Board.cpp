@@ -64,6 +64,10 @@ int Board::check_win() const {
     return unopened_cells == mine_count;
 }
 
+std::tuple<int, int, int> Board::info() const {
+    return {height, width, mine_count};
+}
+
 int Board::count_adj(int x, int y) const {
     int count = 0;
 
