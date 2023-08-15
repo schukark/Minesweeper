@@ -43,6 +43,15 @@ void Menu::init_game() {
         std::wcout << L"Enter height, width and number of mines:" << std::endl;
         std::wcin >> height >> width >> mines;
 
+        if (mines >= height * width) {
+            std::wcout << L"Too much bombs!" << std::endl;
+            return;
+        }
+        else if (mines <= 0) {
+            std::wcout << L"Too little bombs!" << std::endl;
+            return;
+        }
+
         board = std::move(std::make_unique<Board>(Board(height, width, mines)));
     }
     else {
@@ -72,5 +81,13 @@ void Menu::make_move() {
         return;
     }
     board->print_board();
+    if (check_win()) {
+        std::wcout << L"You won!" << std::endl;
+        return;
+    }
     make_move();
+}
+
+int Menu::check_win() const {
+    return board->check_win();
 }
