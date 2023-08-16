@@ -13,10 +13,10 @@
 class Board {
 public:
     Board(int height, int width, int mine_count);
-    void print_board() const;
     int make_move(int row, int col, bool mine);
     int check_win() const;
     std::tuple<int, int, int> info() const;
+    std::vector<std::vector<wchar_t>> get_board() const;
 
 private:
     static std::random_device rd;

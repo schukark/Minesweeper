@@ -4,10 +4,13 @@
 #include <memory>
 
 #include "SDL2\SDL.h"
+#include "SDL2\SDL_ttf.h"
 #include "classes\Board.cpp"
 #include "classes\Menu.cpp"
 
-#define FPS 60
+#define FPS 90
+#define WIDTH 480
+#define HEIGHT 640
 
 int main(int argc, char** argv) {
     _setmode(_fileno(stdout), _O_U8TEXT);
@@ -23,7 +26,7 @@ int main(int argc, char** argv) {
 
     std::wcout << "Gameboard initialized" << std::endl;
 
-    int grid_cell_size = 36;
+    int grid_cell_size = std::max(36, std::min(WIDTH / grid_width, HEIGHT / grid_height));
 
     // + 1 so that the last grid lines fit in the screen.
     int window_width = (grid_width * grid_cell_size) + 1;
@@ -54,11 +57,13 @@ int main(int argc, char** argv) {
     // SDL_Color grid_cursor_ghost_color = {200, 200, 200, 255};
     // SDL_Color grid_cursor_color = {160, 160, 160, 255}; // Grey
 
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Initialize SDL: %s",
             SDL_GetError());
         return EXIT_FAILURE;
     }
+
+    TTF_Init();
 
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -140,10 +145,7 @@ int main(int argc, char** argv) {
 
         // Draw grid cursor.
         if (not_first_click) {
-            SDL_SetRenderDrawColor(renderer, grid_cursor_color.r,
-                grid_cursor_color.g, grid_cursor_color.b,
-                grid_cursor_color.a);
-            SDL_RenderFillRect(renderer, &grid_cursor);
+            gameboard->print_board(renderer, grid_cursor_color, grid_background, grid_cell_size);
         }
 
         SDL_RenderPresent(renderer);

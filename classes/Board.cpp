@@ -13,15 +13,6 @@ Board::Board(int height, int width, int mine_count) : height(height), width(widt
     board = std::move(std::vector<std::vector<wchar_t>>(height, std::vector<wchar_t>(width, EMPTY_SPACE)));
 }
 
-void Board::print_board() const {
-    for (const auto& row : board) {
-        for (const auto& elem : row) {
-            std::wcout << elem;
-        }
-        std::wcout << std::endl;
-    }
-}
-
 int Board::make_move(int row, int col, bool mine) {
     if (row >= height || col >= width || row < 0 || col < 0) {
         std::wcout << L"Incorrect move, out of bounds" << std::endl;
@@ -64,6 +55,10 @@ int Board::check_win() const {
 
 std::tuple<int, int, int> Board::info() const {
     return {height, width, mine_count};
+}
+
+std::vector<std::vector<wchar_t>> Board::get_board() const {
+    return board;
 }
 
 int Board::count_adj(int x, int y) const {
