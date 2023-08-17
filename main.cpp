@@ -8,7 +8,7 @@
 #include "classes\Board.cpp"
 #include "classes\Menu.cpp"
 
-#define FPS 90
+#define FPS 60
 #define WIDTH 480
 #define HEIGHT 640
 
@@ -57,13 +57,15 @@ int main(int argc, char** argv) {
     // SDL_Color grid_cursor_ghost_color = {200, 200, 200, 255};
     // SDL_Color grid_cursor_color = {160, 160, 160, 255}; // Grey
 
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0) {
+    if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Initialize SDL: %s",
             SDL_GetError());
         return EXIT_FAILURE;
     }
 
-    TTF_Init();
+    if (TTF_Init() < 0) {
+        return EXIT_FAILURE;
+    }
 
     SDL_Window* window;
     SDL_Renderer* renderer;
@@ -81,7 +83,7 @@ int main(int argc, char** argv) {
     SDL_bool mouse_hover = SDL_FALSE;
     SDL_bool not_first_click = SDL_FALSE;
 
-    std::wcout << window_height << " " << window_width << std::endl;
+    //std::wcout << window_height << " " << window_width << std::endl;
 
     while (!quit) {
         SDL_Event event;

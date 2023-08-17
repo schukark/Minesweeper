@@ -1,7 +1,6 @@
 #include "Menu.hpp"
 #include <iostream>
 #include <string>
-#include <cstdint>
 
 std::tuple<int, int, int> Menu::init_game() {
     std::wcout << L"Possible difficulties:" << std::endl;
@@ -47,6 +46,7 @@ std::tuple<int, int, int> Menu::init_game() {
 }
 
 void Menu::make_move(int row, int col, bool mine) {
+    std::wcout << "Made move " << row << " " << col << std::endl;
     if (board->make_move(row, col, mine)) {
         std::wcout << L"You lost" << std::endl;
         return;
@@ -66,11 +66,12 @@ void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopen
     TTF_Font* font = TTF_OpenFont("FreeSans.ttf", 24);
     std::wstring numerals_wide = L"０１２３４５６７８９";
 
-    for (uint32_t i = 0; i < board->get_board().size(); i++) {
-        for (uint32_t j = 0; j < board->get_board()[0].size(); i++) {
+    for (int i = 0; i < board->get_board().size(); i++) {
+        for (int j = 0; j < board->get_board()[0].size(); i++) {
 
             if (numerals_wide.find(board->get_board()[i][j]) == std::wstring::npos) {
 
+                std::wcout << "Found non-number character " << i << " " << j << std::endl;
                 if (board->get_board()[i][j] == EMPTY_SPACE) {
                     SDL_Rect rect = {.x = grid_size * i, .y = grid_size * j, .w = grid_size, .h = grid_size};
                     
@@ -91,12 +92,14 @@ void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopen
             }
 
             else {
+                std::wcout << "Number character " << i << " " << j << std::endl;
                 int count = board->get_board()[i][j] - numerals_wide[0];
                 SDL_Rect rect;
                 SDL_Texture *text = create_text_window(renderer, grid_size * i, grid_size * j, 
                                                     std::to_string(count).c_str(), font, &rect);
 
                 SDL_RenderCopy(renderer, text, NULL, &rect);
+                SDL_DestroyTexture(text);
                 SDL_RenderPresent(renderer);
             }
         }
@@ -106,7 +109,9 @@ void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopen
 SDL_Texture* Menu::create_text_window(SDL_Renderer* renderer, int x, int y, const char* text, 
                                         TTF_Font* font, SDL_Rect* rect) {
     SDL_Color textColor = {255, 255, 255, 0};
+    
     SDL_Surface* surface = TTF_RenderText_Solid(font, text, textColor);
+    std::wcout << "create surface" << std::endl;
     SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
 
     int text_width = surface->w;
