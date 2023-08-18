@@ -30,4 +30,4 @@ exec: clean build
 	./main
 
 clean:
-	del classes\*.o *.exe main.o
+	del main.exe main.o

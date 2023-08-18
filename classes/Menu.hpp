@@ -15,6 +15,6 @@ public:
 
 private:
     static SDL_Texture* create_text_window(SDL_Renderer* renderer, int x, int y, const char* text, 
-                                    TTF_Font* font, SDL_Rect* rect);
+                                    TTF_Font* font, SDL_Rect* rect, int grid_cell_size);
     std::unique_ptr<Board> board;
 };

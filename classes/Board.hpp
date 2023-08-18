@@ -28,7 +28,6 @@ private:
     std::vector<std::vector<wchar_t>> board;
     std::map<std::pair<int, int>, bool> mines;
 
-    void print_board_loss();
     int count_adj(int x, int y) const;
     void reveal_adjacent(int x, int y);
     void generate_board(int first_x, int first_y);

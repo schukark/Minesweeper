@@ -104,24 +104,3 @@ void Board::generate_board(int first_x, int first_y) {
         count++;
     }
 }
-
-void Board::print_board_loss() {
-    for (const auto& [key, value] : mines) {
-        board[key.first][key.second] = BOMB;
-    }
-
-    for (int x = 0; x < height; x++) {
-        for (int y = 0; y < width; y++) {
-            if (board[x][y] == BOMB) {
-                std::wcout << BOMB;
-                continue;
-            }
-
-            int count = count_adj(x, y);
-
-            if (count) std::wcout << numerals[count];
-            else std::wcout << EMPTY_SPACE;
-        }
-        std::wcout << std::endl;
-    }
-}

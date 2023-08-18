@@ -89,39 +89,41 @@ int main(int argc, char** argv) {
         SDL_Event event;
 
         if (!SDL_PollEvent(&event)) continue;
-        
+
         switch (event.type) {
-            case SDL_MOUSEBUTTONDOWN:
-                grid_cursor.x = (event.motion.x / grid_cell_size) * grid_cell_size;
-                grid_cursor.y = (event.motion.y / grid_cell_size) * grid_cell_size;
+        case SDL_MOUSEBUTTONDOWN:
+            grid_cursor.x = (event.motion.x / grid_cell_size) * grid_cell_size;
+            grid_cursor.y = (event.motion.y / grid_cell_size) * grid_cell_size;
 
-                gameboard->make_move(grid_cursor.x / grid_cell_size, grid_cursor.y / grid_cell_size, true);
+            gameboard->make_move(grid_cursor.x / grid_cell_size, grid_cursor.y / grid_cell_size, true);
 
-                not_first_click = SDL_TRUE;
-                break;
+            not_first_click = SDL_TRUE;
+            break;
 
-            case SDL_MOUSEMOTION:
-                grid_cursor_ghost.x = (event.motion.x / grid_cell_size) * grid_cell_size;
-                grid_cursor_ghost.y = (event.motion.y / grid_cell_size) * grid_cell_size;
+        case SDL_MOUSEMOTION:
+            grid_cursor_ghost.x = (event.motion.x / grid_cell_size) * grid_cell_size;
+            grid_cursor_ghost.y = (event.motion.y / grid_cell_size) * grid_cell_size;
 
-                mouse_active = SDL_TRUE;
-                break;
+            mouse_active = SDL_TRUE;
+            break;
 
-            case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_ENTER && !mouse_hover)
-                    mouse_hover = SDL_TRUE;
-                else if (event.window.event == SDL_WINDOWEVENT_LEAVE && mouse_hover)
-                    mouse_hover = SDL_FALSE;
-                break;
+        case SDL_WINDOWEVENT:
+            if (event.window.event == SDL_WINDOWEVENT_ENTER && !mouse_hover)
+                mouse_hover = SDL_TRUE;
+            else if (event.window.event == SDL_WINDOWEVENT_LEAVE && mouse_hover)
+                mouse_hover = SDL_FALSE;
+            break;
 
-            case SDL_QUIT:
-                quit = SDL_TRUE;
-                break;
+        case SDL_QUIT:
+            quit = SDL_TRUE;
+            break;
         }
 
-        // Draw grid background.
-        SDL_SetRenderDrawColor(renderer, grid_background.r, grid_background.g,
-            grid_background.b, grid_background.a);
+        //if (!not_first_click) {
+            SDL_SetRenderDrawColor(renderer, grid_background.r, 
+                grid_background.g, grid_background.b, grid_background.a);
+        //}
+
         SDL_RenderClear(renderer);
 
         // Draw grid lines.
@@ -147,7 +149,7 @@ int main(int argc, char** argv) {
 
         // Draw grid cursor.
         if (not_first_click) {
-            gameboard->print_board(renderer, grid_cursor_color, grid_background, grid_cell_size);
+            gameboard->print_board(renderer, grid_background, grid_cursor_color, grid_cell_size);
         }
 
         SDL_RenderPresent(renderer);
