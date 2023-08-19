@@ -45,29 +45,22 @@ std::tuple<int, int, int> Menu::init_game() {
     return board->info();
 }
 
-void Menu::make_move(int row, int col, bool mine) {
-    if (board->make_move(row, col, mine)) {
-        std::wcout << L"You lost" << std::endl;
-        return;
-    }
-
-    if (check_win()) {
-        std::wcout << L"You won!" << std::endl;
-        return;
-    }
+int Menu::make_move(int row, int col, bool mine) {
+    return board->make_move(row, col, mine);
 }
 
 int Menu::check_win() const {
     return board->check_win();
 }
 
-void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopened, int grid_size) const {
-    TTF_Font* font = TTF_OpenFont("AovelSansRounded-rdDL.ttf", 24);
+void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopened, int grid_size, TTF_Font* font, bool loss) const {
     if (!font) {
-        std::wcout << L"Error loading FreeSans font" << std::endl;
+        std::wcout << L"Error loading font" << std::endl;
     }
 
     std::wstring numerals_wide = L"０１２３４５６７８９";
+
+    if (loss) board->make_board_loss();
 
     for (int i = 0; i < board->get_board()[0].size(); i++) {
         for (int j = 0; j < board->get_board().size(); j++) {

@@ -9,9 +9,9 @@
 class Menu {
 public:
     std::tuple<int, int, int> init_game();
-    void make_move(int row, int col, bool mine);
+    int make_move(int row, int col, bool mine);
     int check_win() const;
-    void print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopened, int grid_size) const;
+    void print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopened, int grid_size, TTF_Font* font, bool loss) const;
 
 private:
     static SDL_Texture* create_text_window(SDL_Renderer* renderer, int x, int y, const char* text, 

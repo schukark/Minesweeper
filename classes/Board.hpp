@@ -17,6 +17,7 @@ public:
     int check_win() const;
     std::tuple<int, int, int> info() const;
     std::vector<std::vector<wchar_t>> get_board() const;
+    void make_board_loss();
 
 private:
     static std::random_device rd;

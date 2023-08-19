@@ -83,6 +83,8 @@ int main(int argc, char** argv) {
     SDL_bool mouse_hover = SDL_FALSE;
     SDL_bool not_first_click = SDL_FALSE;
 
+    TTF_Font* font = TTF_OpenFont("AovelSansRounded-rdDL.ttf", 24);
+
     //std::wcout << window_height << " " << window_width << std::endl;
 
     while (!quit) {
@@ -95,7 +97,12 @@ int main(int argc, char** argv) {
             grid_cursor.x = (event.motion.x / grid_cell_size) * grid_cell_size;
             grid_cursor.y = (event.motion.y / grid_cell_size) * grid_cell_size;
 
-            gameboard->make_move(grid_cursor.x / grid_cell_size, grid_cursor.y / grid_cell_size, true);
+            if (gameboard->make_move(grid_cursor.x / grid_cell_size, grid_cursor.y / grid_cell_size, true)) {
+                std::wcout << "You lost!" << std::endl;
+                gameboard->print_board(renderer, grid_cursor_color, grid_background, grid_cell_size, font, true);
+                quit = SDL_TRUE;
+                SDL_Delay(5000);
+            }
 
             not_first_click = SDL_TRUE;
             break;
@@ -148,8 +155,8 @@ int main(int argc, char** argv) {
         }
 
         // Draw grid cursor.
-        if (not_first_click) {
-            gameboard->print_board(renderer, grid_background, grid_cursor_color, grid_cell_size);
+        if (not_first_click && !quit) {
+            gameboard->print_board(renderer, grid_background, grid_cursor_color, grid_cell_size, font, false);
         }
 
         SDL_RenderPresent(renderer);

@@ -21,7 +21,6 @@ int Board::make_move(int row, int col, bool mine) {
     }
 
     if (mine && mines.count(std::make_pair(row, col)) > 0) {
-        print_board_loss();
         return 1;
     }
 
@@ -59,6 +58,21 @@ std::tuple<int, int, int> Board::info() const {
 
 std::vector<std::vector<wchar_t>> Board::get_board() const {
     return board;
+}
+
+void Board::make_board_loss() {
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            int count = count_adj(i, j);
+            if (count > 0) {
+                board[i][j] = numerals[count];
+            }
+
+            if (mines.count(std::make_pair(i, j)) > 0) {
+                board[i][j] = BOMB;
+            }
+        }
+    }
 }
 
 int Board::count_adj(int x, int y) const {
