@@ -18,6 +18,7 @@ public:
     std::tuple<int, int, int> info() const;
     std::vector<std::vector<wchar_t>> get_board() const;
     void make_board_loss();
+    std::map<std::pair<int, int>, bool> get_mines() const;
 
 private:
     static std::random_device rd;

@@ -58,9 +58,20 @@ void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopen
         std::wcout << L"Error loading font" << std::endl;
     }
 
+    SDL_Surface *image = NULL;
+    SDL_Texture *bomb = NULL;
+    SDL_Surface *image2 = SDL_LoadBMP("flag.bmp");
+    SDL_Texture *flag = SDL_CreateTextureFromSurface(renderer, image2);
+    SDL_FreeSurface(image2);
+
     std::wstring numerals_wide = L"０１２３４５６７８９";
 
-    if (loss) board->make_board_loss();
+    if (loss) {
+        board->make_board_loss();
+        image = SDL_LoadBMP("bomb.bmp");
+        bomb = SDL_CreateTextureFromSurface(renderer, image);
+        SDL_FreeSurface(image);
+    }
 
     for (int i = 0; i < board->get_board()[0].size(); i++) {
         for (int j = 0; j < board->get_board().size(); j++) {
@@ -69,17 +80,27 @@ void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopen
 
                 SDL_Rect rect = {.x = grid_size * j + 1, .y = grid_size * i + 1, .w = grid_size - 2, .h = grid_size - 2};
 
+                if (loss && board->get_mines().count(std::make_pair(j, i)) > 0) {
+                    SDL_RenderCopy(renderer, bomb, NULL, &rect);
+                    continue;
+                }
+
                 if (board->get_board()[j][i] == EMPTY_SPACE) {
                     SDL_SetRenderDrawColor(renderer, Empty.r,
                         Empty.g, Empty.b,
                         Empty.a);
                 }
 
-                else {                    
+                else if (board->get_board()[j][i] == NOT_PRESSED) {                    
                     SDL_SetRenderDrawColor(renderer, Unopened.r,
                         Unopened.g, Unopened.b,
                         Unopened.a);
                 }
+                else {
+                    SDL_RenderCopy(renderer, flag, NULL, &rect);
+                    continue;
+                }
+                
                 SDL_RenderFillRect(renderer, &rect);
             }
 
@@ -95,6 +116,11 @@ void Menu::print_board(SDL_Renderer* renderer, SDL_Color Empty, SDL_Color Unopen
         }
     }
 
+    if (loss) {
+        SDL_DestroyTexture(bomb);
+    }
+
+    SDL_DestroyTexture(flag);
     SDL_RenderPresent(renderer);
 }
 

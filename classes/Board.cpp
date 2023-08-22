@@ -75,6 +75,10 @@ void Board::make_board_loss() {
     }
 }
 
+std::map<std::pair<int, int>, bool> Board::get_mines() const {
+    return mines;
+}
+
 int Board::count_adj(int x, int y) const {
     int count = 0;
 
